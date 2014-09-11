@@ -14,7 +14,7 @@ Make sure that you use autoloader and the proper namespace.
 
 ```
 require 'vendor/autoload.php';
-use Jacobemerick\CustomerIO\Client;
+use Shutterstock\CustomerIO\Client;
 ```
 
 The only parameters to pass in with construct is your site id and secret key. Unless you have global CURL options, than pass that in as an optional third array parameter.

@@ -1,5 +1,5 @@
 {
-    "name": "jacobemerick/customerio-client",
+    "name": "shutterstock/customerio-client",
     "description": "PHP Client for Server-Side Customer.io Communication",
     "minimum-stability": "dev",
     "require": {
@@ -7,7 +7,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Jacobemerick\\CustomerIO": "src"
+            "Shutterstock\\CustomerIO": "src"
         }
     }
 }

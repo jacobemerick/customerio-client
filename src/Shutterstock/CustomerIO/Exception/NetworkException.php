@@ -1,6 +1,6 @@
 <?php
 
-namespace Jacobemerick\CustomerIO\Exception;
+namespace Shutterstock\CustomerIO\Exception;
 
 use Presto\Response;
 use Exception;
