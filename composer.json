@@ -1,0 +1,14 @@
+{
+    "name": "jacobemerick/customerio-client",
+    "description": "PHP Client for Server-Side Customer.io Communication",
+    "minimum-stability": "dev",
+    "require": {
+        "shutterstock/presto": "1.0.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Jacobemerick\\CustomerIO": "src"
+        }
+    }
+}
+
