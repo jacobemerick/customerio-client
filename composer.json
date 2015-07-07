@@ -1,13 +1,24 @@
 {
     "name": "jacobemerick/customerio-client",
     "description": "PHP Client for Server-Side Customer.io Communication",
+    "keywords": [
+        "php client",
+        "customerio"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jacob Emerick"
+        }
+    ],
     "minimum-stability": "dev",
     "require": {
-        "shutterstock/presto": "1.0.*"
+        "php": ">=5.4",
+        "shutterstock/presto": "2.0.*"
     },
     "autoload": {
-        "psr-0": {
-            "Jacobemerick\\CustomerIO": "src"
+        "psr-4": {
+            "Jacobemerick\\CustomerIO\\": "src/"
         }
     }
 }
