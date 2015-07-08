@@ -2,14 +2,14 @@
 
 namespace Jacobemerick\CustomerIO;
 
-use Presto\Presto;
-use Presto\Response;
+use Shutterstock\Presto\Presto;
+use Shutterstock\Presto\Response;
 
 class Client
 {
 
     // main endpoint for REST API
-    protected $api_endpoint = 'https://track.customer.io/api';
+    protected $domain = 'https://track.customer.io/api';
 
     // holders for authentication params
     protected $site_id;
@@ -48,22 +48,15 @@ class Client
         $email,
         array $attributes = []
     ) {
-        $options = $this->options + [
-            CURLOPT_HTTPHEADER => [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ],
-        ];
-
-        $request = $this->getRequest(
-            $options,
-            $this->site_id,
-            $this->secret_key
-        );
-
-        $endpoint = "{$this->api_endpoint}/v1/customers/{$customer_id}";
+        $endpoint = "{$this->domain}/v1/customers/{$customer_id}";
         $params = array_merge($attributes, ['email' => $email]);
         $params = http_build_query($params);
 
+        $request = $this->buildRequestObject([
+            \CURLOPT_HTTPHEADER => [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ]
+        ]);
         $response = $request->put($endpoint, $params);
         return $this->processResponse($response);
     }
@@ -83,22 +76,15 @@ class Client
         $email,
         array $attributes = []
     ) {
-        $options = $this->options + [
-            CURLOPT_HTTPHEADER => [
-                'Content-Type' => 'application/json',
-            ],
-        ];
-
-        $request = $this->getRequest(
-            $options,
-            $this->site_id,
-            $this->secret_key
-        );
-
-        $endpoint = "{$this->api_endpoint}/v1/customers/{$customer_id}";
+        $endpoint = "{$this->domain}/v1/customers/{$customer_id}";
         $params = array_merge($attributes, ['email' => $email]);
         $params = json_encode($params);
 
+        $request = $this->buildRequestObject([
+            \CURLOPT_HTTPHEADER => [
+                'Content-Type' => 'application/json',
+            ]
+        ]);
         $response = $request->put($endpoint, $params);
         return $this->processResponse($response);
     }
@@ -113,14 +99,9 @@ class Client
      */
     public function deleteCustomer($customer_id)
     {
-        $request = $this->getRequest(
-            $this->options,
-            $this->site_id,
-            $this->secret_key
-        );
+        $endpoint = "{$this->domain}/v1/customers/{$customer_id}";
 
-        $endpoint = "{$this->api_endpoint}/v1/customers/{$customer_id}";
-
+        $request = $this->buildRequestObject();
         $response = $request->delete($endpoint, []);
         return $this->processResponse($response);
     }
@@ -130,45 +111,36 @@ class Client
      *
      * @param   string   $customer_id  unique identifier for the customer
      * @param   string   $event_name   name of the event to track
-     * @param   array    $data         related information to attach to this event
+     * @param   array    $metadata     related information to attach to this event
      * @return  boolean                whether or not the request was successful
      */
     public function trackEvent(
         $customer_id,
         $event_name,
-        array $data = []
+        array $metadata = []
     ) {
-        $options = $this->options + [
-            CURLOPT_HTTPHEADER => [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ],
-        ];
-
-        $request = $this->getRequest(
-            $options,
-            $this->site_id,
-            $this->secret_key
-        );
-
-        $endpoint = "{$this->api_endpoint}/v1/customers/{$customer_id}/events";
+        $endpoint = "{$this->domain}/v1/customers/{$customer_id}/events";
         $params = ['name' => $event_name];
-        if (!empty($data)) {
-            $params['data'] = $data;
+        if (!empty($metadata)) {
+            $params['data'] = $metadata;
         }
         $params = http_build_query($params);
 
+        $request = $this->buildRequestObject([
+            \CURLOPT_HTTPHEADER => [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
+        ]);
         $response = $request->post($endpoint, $params);
         return $this->processResponse($response);
     }
 
-    protected function getRequest(
-        array $options,
-        $site_id,
-        $secret_key
-    ) {
-        // use + instead of array_merge to preserve numeric CURLOPT keys
-        $options = $options + [
-            CURLOPT_USERPWD => "{$site_id}:{$secret_key}",
+    protected function buildRequestObject(array $additional_options = [])
+    {
+        $options = $this->options;
+        $options += $additional_options;
+        $options += [
+            \CURLOPT_USERPWD => "{$this->site_id}:{$this->secret_key}",
         ];
 
         return new Presto($options);
